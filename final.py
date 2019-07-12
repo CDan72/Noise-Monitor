@@ -11,7 +11,7 @@ fs = 44100
 plotx = []
 ploty = []
 
-datestring = datetime.strftime(datetime.now(), '%Y/%m/%d')
+datestring = datetime.strftime(datetime.now(), '%d/%m/%Y')
 timestring = wait.strftime('%H:%M:%S')
 
 print (datestring)
