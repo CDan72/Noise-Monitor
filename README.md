@@ -1,7 +1,7 @@
 # Noise Monitor Project
 
 ### Background Info
-I completed this project during a 1 week work experience at Embecosm. This was a real-world project offered to me prior to my arrival
+I completed this project during a 1 week work experience at Embecosm. This was a real-world project offered to me prior to my arrival which I decided to attempt
 
 ### About The Project
 My project consists of a Python 3 file, which then creates a PNG file and a CSV file, and it sends emails. The first section of code imports all the packages you will need throughout the code. The 'fs' variable is the sample rate of your recording and the 2 empty list are where your recorded data goes. Datestring and Timestring save the current date and time as separate variables.
