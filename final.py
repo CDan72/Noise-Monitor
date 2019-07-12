@@ -1,14 +1,12 @@
 #!/usr/bin/python3
 import time as wait
 import sounddevice as sd
-from scipy.io.wavfile import write
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
-import pandas as pd 
-import png
+import pandas as pd
+import sys
 
-num = 66
 fs = 44100
 plotx = []
 ploty = []
@@ -27,8 +25,10 @@ def point(seconds):
 
 print ("Start of day")
 print (" ")
-asdf = datetime.now().minute + 1
-while datetime.now().minute < asdf:
+endh = int(sys.argv[1])
+endm = int(sys.argv[2])
+
+while datetime.now().hour < endh or datetime.now().minute < endm:
     # Get sound level
     a = point(10)
     # Compute x as time as fractions of an hour
@@ -48,6 +48,12 @@ plt.ylim (0, 1)
 plt.grid(True)
 
 plt.savefig("graph.png")
+
+import csv
+with open('data.csv', 'w', newline='') as f:
+    datawriter = csv.writer(f)
+    data = zip(["Time"] + plotx, ["Noise"] + ploty)
+    datawriter.writerows(data)
 
 print (" ")
 print ("End of day")
@@ -77,15 +83,16 @@ msg["To"] = sendto[0]
 msg["Date"] = formatdate(localtime=True)
 msg["Subject"] = f"Graph for {datestring}"
 
-f = "/home/pi/Documents/Noise-Monitor/graph.png"
-with open(f, "rb") as fil:
-    part = MIMEApplication(
-        fil.read(),
-        Name=basename(f)
-    )
-# After the file is closed
-part['Content-Disposition'] = 'attachment; filename="%s"' % basename(f)
-msg.attach(part)
+files = ["/home/pi/Documents/Noise-Monitor/graph.png", "/home/pi/Documents/Noise-Monitor/data.csv"]
+for f in files:
+    with open(f, "rb") as fil:
+        part = MIMEApplication(
+            fil.read(),
+            Name=basename(f)
+        )
+    # After the file is closed
+    part['Content-Disposition'] = 'attachment; filename="%s"' % basename(f)
+    msg.attach(part)
 
 s.sendmail(username, sendto, msg.as_string())
 
