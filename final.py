@@ -13,7 +13,7 @@ fs = 44100
 plotx = []
 ploty = []
 
-datestring = datetime.strftime(datetime.now(), '%Y%m%d')
+datestring = datetime.strftime(datetime.now(), '%Y/%m/%d')
 timestring = wait.strftime('%H:%M:%S')
 
 print (datestring)
@@ -27,8 +27,8 @@ def point(seconds):
 
 print ("Start of day")
 print (" ")
-  
-while datetime.now().hour < 18:
+asdf = datetime.now().minute + 1
+while datetime.now().minute < asdf:
     # Get sound level
     a = point(10)
     # Compute x as time as fractions of an hour
@@ -47,9 +47,47 @@ plt.ylabel ('max points')
 plt.ylim (0, 1)
 plt.grid(True)
 
-plt.savefig("Data-For-" + datestring + ".png")
+plt.savefig("graph.png")
 
 print (" ")
 print ("End of day")
 
-wait.sleep(3)
+wait.sleep(5)
+
+import smtplib
+from os.path import basename
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import COMMASPACE, formatdate
+
+s = smtplib.SMTP('smtp.gmail.com', 587)
+s.starttls()
+s.ehlo()
+
+username='noisemonitor123@gmail.com'
+password='NoiseMonitor123'
+s.login(username,password)
+
+sendto=['noisemonitor@googlegroups.com']
+
+msg = MIMEMultipart()
+msg["From"] = username
+msg["To"] = sendto[0]
+msg["Date"] = formatdate(localtime=True)
+msg["Subject"] = f"Graph for {datestring}"
+
+f = "/home/pi/Documents/Noise-Monitor/graph.png"
+with open(f, "rb") as fil:
+    part = MIMEApplication(
+        fil.read(),
+        Name=basename(f)
+    )
+# After the file is closed
+part['Content-Disposition'] = 'attachment; filename="%s"' % basename(f)
+msg.attach(part)
+
+s.sendmail(username, sendto, msg.as_string())
+
+rslt=s.quit()
+
